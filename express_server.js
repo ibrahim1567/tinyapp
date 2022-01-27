@@ -9,6 +9,8 @@ const generateRandomString = function() {
   };
 
 const bodyParser = require("body-parser");
+var cookieParser = require('cookie-parser')
+app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended: true}));
 
 const urlDatabase = {
@@ -60,6 +62,9 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 app.post("/urls/:id" , (req, res) => {
   res.redirect("/urls");
+});
+app.post("/login", (req, res) => {
+  console.log(req.cookies)
 });
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
