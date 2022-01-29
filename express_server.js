@@ -159,6 +159,7 @@ app.post("/register", (req, res) => {
     res.status(400).send("Email already exists. Please login!!");
   } else {
     users[userID] = {
+      password: password,
       id: userID,
       email: email,
     };
