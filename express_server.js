@@ -104,12 +104,14 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.post("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL
-  if (req.session.id === urlDatabase[shortURL].id){
+  const id = req.session.id
+  if (urlDatabase[shortURL].id != id){
+    const error = 'Please login.';
+    res.send(error);
+  }
   urlDatabase[req.params.shortURL].longURL = req.body.longURL;
   res.redirect("/urls");
-}
-const error = 'Please login.';
-  res.send(error);
+
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
