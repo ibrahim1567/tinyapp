@@ -46,7 +46,7 @@ app.get("/urls", (req, res) => {
   let obj1 = {};
   const loginID = req.session.id;
   for (let url in urlDatabase) {
-    if (urlDatabase[url].urlID === loginID) {
+    if (urlDatabase[url].userID === loginID) {
       obj1[url] = urlDatabase[url];
     }
   }
@@ -71,7 +71,7 @@ app.post("/urls", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL];
+  const longURL = urlDatabase[shortURL].longURL;
   res.redirect(longURL);
 });
 
@@ -110,6 +110,7 @@ app.post("/urls/:shortURL", (req, res) => {
     res.send(error);
   }
   urlDatabase[req.params.shortURL].longURL = req.body.longURL;
+  urlDatabase[shortURL].userID = id
   res.redirect("/urls");
 
 });
