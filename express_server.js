@@ -44,18 +44,21 @@ const users = {
 
 app.get("/urls", (req, res) => {
   let obj1 = {};
-  const loginID = req.session.id;
+  const userId = req.session.user_id
   for (let url in urlDatabase) {
-    if (urlDatabase[url].userID === loginID) {
+    console.log("loginID", urlDatabase[url].userID);
+    if (urlDatabase[url].userID === userId) {
       obj1[url] = urlDatabase[url];
     }
   }
-  const userId = req.session.user_id
+  
   const user = users[userId];
   let templateVars = {
     urls: obj1,
     user,
   };
+  
+  // console.log("userID", userId);
   res.render("urls_index", templateVars);
 });
 
@@ -64,8 +67,10 @@ app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = {
     longURL,
-    userID: req.session.id,
+    userID: req.session.user_id,
   };
+
+  // console.log("req.session.user_ID", req.session.user_id);
   res.redirect("/urls/" + shortURL);
 });
 
@@ -78,7 +83,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/urls/new", (req, res) => {
 
   let obj1 = {};
-  const loginID = req.session.id;
+  const loginID = req.session.user_id;
   for (let url in urlDatabase) {
     if (urlDatabase[url].urlID === loginID) {
       obj1[url] = urlDatabase[url];
@@ -104,8 +109,8 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.post("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL
-  const id = req.session.id
-  if (urlDatabase[shortURL].id != id){
+  const id = req.session.user_id
+  if (urlDatabase[shortURL].userID != id){
     const error = 'Please login.';
     res.send(error);
   }
@@ -128,13 +133,13 @@ app.post("/urls/:id" , (req, res) => {
 
 app.get("/login", (req, res) => {
   let templateVars = {
-    username: users[req.session.id],
+    username: users[req.session.user_id],
   };
   res.render("urls_login", templateVars);
 });
 
 app.get("/", (req, res) => {
-  if (req.session.id){
+  if (req.session.user_id){
     res.redirect("/urls");
   } else {
     res.redirect ("/login");
@@ -161,7 +166,7 @@ app.post("/logout", (req, res) => {
 
 app.get("/register", (req, res) => {
   let templateVars = {
-    username: users[req.session.id],
+    username: users[req.session.user_id],
   };
   res.render("urls_registration", templateVars);
 });
